@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 DiffPlug
+ * Copyright 2016-2021 DiffPlug
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class KtfmtStep {
 	// prevent direct instantiation
 	private KtfmtStep() {}
 
-	private static final String DEFAULT_VERSION = "0.18";
+	private static final String DEFAULT_VERSION = "0.19";
 	static final String NAME = "ktfmt";
 	static final String PACKAGE = "com.facebook";
 	static final String MAVEN_COORDINATE = PACKAGE + ":ktfmt:";
@@ -79,6 +79,10 @@ public class KtfmtStep {
 		return DEFAULT_VERSION;
 	}
 
+	public static String defaultStyle() {
+		return Style.DEFAULT.name();
+	}
+
 	static final class State implements Serializable {
 		private static final long serialVersionUID = 1L;
 
@@ -118,6 +122,12 @@ public class KtfmtStep {
 		}
 
 		private Object getDropboxStyleFormattingOptions(ClassLoader classLoader) throws Exception {
+			try {
+				// ktfmt v0.19 and later
+				return classLoader.loadClass(pkg + ".ktfmt.FormatterKt").getField("DROPBOX_FORMAT").get(null);
+			} catch (NoSuchFieldException ignored) {}
+
+			// fallback to old, pre-0.19 ktfmt interface.
 			Class<?> formattingOptionsCompanionClazz = classLoader.loadClass(pkg + ".ktfmt.FormattingOptions$Companion");
 			Object companion = formattingOptionsCompanionClazz.getConstructors()[0].newInstance((Object) null);
 			Method formattingOptionsMethod = formattingOptionsCompanionClazz.getDeclaredMethod(DROPBOX_STYLE_METHOD);

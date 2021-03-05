@@ -4,6 +4,33 @@ We adhere to the [keepachangelog](https://keepachangelog.com/en/1.0.0/) format (
 
 ## [Unreleased]
 
+## [5.10.2] - 2021-02-16
+### Fixed
+* Allow licence headers to be blank ([#801](https://github.com/diffplug/spotless/pull/801)).
+
+## [5.10.1] - 2021-02-11
+### Fixed
+* Fixed the `clean` task when Gradle's configuration cache is enabled ([#796](https://github.com/diffplug/spotless/issues/796))
+
+## [5.10.0] - 2021-02-09
+### Added
+* Support for diktat in KotlinGradleExtension ([#789](https://github.com/diffplug/spotless/pull/789))
+
+## [5.9.0] - 2021-01-04
+### Added
+* Added support for `eclipse-cdt`, `eclipse-jdt`, and `eclipse-wtp` at `4.18.0`.
+### Changed
+* Bump `eclipse-jdt` default version from `4.17.0` to `4.18.0`.
+* Bump `eclipse-wtp` default version from `4.17.0` to `4.18.0`.
+* Bump `ktfmt` default version from `0.16` to `0.19` ([#748](https://github.com/diffplug/spotless/issues/748) and [#773](https://github.com/diffplug/spotless/issues/773)).
+### Fixed
+* Fixed `ratchetFrom` support for git-submodule ([#746](https://github.com/diffplug/spotless/issues/746)).
+* Fixed `ratchetFrom` excess memory consumption ([#735](https://github.com/diffplug/spotless/issues/735)).
+* `ktfmt` v0.19+ with dropbox-style works again ([#765](https://github.com/diffplug/spotless/pull/765)).
+* `prettier` no longer throws errors on empty files ([#751](https://github.com/diffplug/spotless/pull/751)).
+* Fixed error when running on root of windows mountpoint ([#760](https://github.com/diffplug/spotless/pull/760)).
+* No longer declare inputs on `SpotlessCheck` and `SpotlessApply` since they don't have any outputs (worker task still does up-to-date and caching) ([#741](https://github.com/diffplug/spotless/issues/741)).
+
 ## [5.8.2] - 2020-11-16
 ### Fixed
 * Fixed a bug which occurred if the root directory of the project was also the filesystem root ([#732](https://github.com/diffplug/spotless/pull/732))

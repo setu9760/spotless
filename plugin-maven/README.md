@@ -12,8 +12,8 @@ output = [
   ].join('\n');
 -->
 [![Maven central](https://img.shields.io/badge/mavencentral-com.diffplug.spotless%3Aspotless--maven--plugin-blue.svg)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.diffplug.spotless%22%20AND%20a%3A%22spotless-maven-plugin%22)
-[![Javadoc](https://img.shields.io/badge/javadoc-yes-blue.svg)](https://javadoc.io/doc/com.diffplug.spotless/spotless-maven-plugin/2.6.1/index.html)
-[![Changelog](https://img.shields.io/badge/changelog-2.6.1-brightgreen.svg)](CHANGES.md)
+[![Javadoc](https://img.shields.io/badge/javadoc-yes-blue.svg)](https://javadoc.io/doc/com.diffplug.spotless/spotless-maven-plugin/2.8.1/index.html)
+[![Changelog](https://img.shields.io/badge/changelog-2.8.1-brightgreen.svg)](CHANGES.md)
 
 [![Circle CI](https://circleci.com/gh/diffplug/spotless/tree/main.svg?style=shield)](https://circleci.com/gh/diffplug/spotless/tree/main)
 [![Live chat](https://img.shields.io/badge/gitter-chat-brightgreen.svg)](https://gitter.im/diffplug/spotless)
@@ -45,10 +45,11 @@ user@machine repo % mvn spotless:check
 
 - [**Quickstart**](#quickstart)
   - [Requirements](#requirements)
+  - [Binding to maven phase](#binding-to-maven-phase)
 - **Languages**
   - [Java](#java) ([google-java-format](#google-java-format), [eclipse jdt](#eclipse-jdt), [prettier](#prettier))
   - [Groovy](#groovy) ([eclipse groovy](#eclipse-groovy))
-  - [Kotlin](#kotlin) ([ktlint](#ktlint), [ktfmt](#ktfmt), [prettier](#prettier))
+  - [Kotlin](#kotlin) ([ktfmt](#ktfmt), [ktlint](#ktlint), [diktat](#diktat), [prettier](#prettier))
   - [Scala](#scala) ([scalafmt](#scalafmt))
   - [C/C++](#cc) ([eclipse cdt](#eclipse-cdt))
   - [Antlr4](#antlr4) ([antlr4formatter](#antlr4formatter))
@@ -130,6 +131,35 @@ Spotless consists of a list of formats (in the example above, `misc` and `java`)
 Spotless requires Maven to be running on JRE 8+.
 
 <a name="applying-to-java-source"></a>
+
+### Binding to maven phase
+
+By default, spotless:check is bound to verify maven phase. This means it is not required to
+explicitly bind the plugin execution, and the following will suffice;
+
+```xml
+<executions>
+  <execution>
+    <goals>
+      <goal>check</goal>
+    </goals>
+  </execution>
+</executions>
+```
+
+with this `mvn verify` will run `spotless:check`. If you require the check goal to be run with
+any other maven phase (i.e. compile) then it can be configured as below;
+
+```xml
+<executions>
+  <execution>
+    <goals>
+      <goal>check</goal>
+    </goals>
+    <phase>compile</phase>
+  </execution>
+</executions>
+```
 
 ## Java
 
@@ -245,8 +275,9 @@ Groovy-Eclipse formatting errors/warnings lead per default to a build failure. T
       <include>src/test/kotlin/**/*.kt</include>
     </includes>
 
-    <ktlint />   <!-- has its own section below -->
     <ktfmt />    <!-- has its own section below -->
+    <ktlint />   <!-- has its own section below -->
+    <diktat />   <!-- has its own section below -->
     <prettier /> <!-- has its own section below -->
 
     <licenseHeader>
@@ -254,6 +285,17 @@ Groovy-Eclipse formatting errors/warnings lead per default to a build failure. T
     </licenseHeader>
   </kotlin>
 </configuration>
+```
+
+### ktfmt
+
+[homepage](https://github.com/facebookincubator/ktfmt). [changelog](https://github.com/facebookincubator/ktfmt/releases). [code](https://github.com/diffplug/spotless/blob/main/plugin-maven/src/main/java/com/diffplug/spotless/maven/kotlin/Ktfmt.java).
+
+```xml
+<ktfmt>
+  <version>0.18</version> <!-- optional -->
+  <style>DEFAULT</style> <!-- optional, other option is DROPBOX -->
+</ktfmt>
 ```
 
 <a name="applying-ktlint-to-kotlin-files"></a>
@@ -268,16 +310,15 @@ Groovy-Eclipse formatting errors/warnings lead per default to a build failure. T
 </ktlint>
 ```
 
-<a name="applying-ktfmt-to-kotlin-files"></a>
+### diktat
 
-### ktfmt
-
-[homepage](https://github.com/facebookincubator/ktfmt). [changelog](https://github.com/facebookincubator/ktfmt/releases). [code](https://github.com/diffplug/spotless/blob/main/plugin-maven/src/main/java/com/diffplug/spotless/maven/kotlin/Ktfmt.java).
+[homepage](https://github.com/cqfn/diKTat). [changelog](https://github.com/cqfn/diKTat/releases). [code](https://github.com/diffplug/spotless/blob/main/plugin-maven/src/main/java/com/diffplug/spotless/maven/kotlin/Diktat.java). You can provide configuration path manually as `configFile`.
 
 ```xml
-<ktfmt>
-  <version>0.13</version> <!-- optional -->
-</ktfmt>
+<diktat>
+  <version>0.4.0</version> <!-- optional -->
+  <configFile>full/path/to/diktat-analysis.yml</configFile> <!-- optional, configuration file path -->
+</diktat>
 ```
 
 <a name="applying-to-scala-source"></a>

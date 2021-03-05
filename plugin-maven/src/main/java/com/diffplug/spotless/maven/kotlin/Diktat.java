@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 DiffPlug
+ * Copyright 2021 DiffPlug
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,32 @@
  */
 package com.diffplug.spotless.maven.kotlin;
 
+import java.util.Collections;
+
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.diffplug.spotless.FileSignature;
 import com.diffplug.spotless.FormatterStep;
-import com.diffplug.spotless.kotlin.KtfmtStep;
-import com.diffplug.spotless.kotlin.KtfmtStep.Style;
+import com.diffplug.spotless.ThrowingEx;
+import com.diffplug.spotless.kotlin.DiktatStep;
 import com.diffplug.spotless.maven.FormatterStepConfig;
 import com.diffplug.spotless.maven.FormatterStepFactory;
 
-public class Ktfmt implements FormatterStepFactory {
+public class Diktat implements FormatterStepFactory {
 
 	@Parameter
 	private String version;
 
 	@Parameter
-	private String style;
+	private String configFile;
 
 	@Override
-	public FormatterStep newFormatterStep(FormatterStepConfig config) {
-		String version = this.version != null ? this.version : KtfmtStep.defaultVersion();
-		String style = this.style != null ? this.style : KtfmtStep.defaultStyle();
-		return KtfmtStep.create(version, config.getProvisioner(), Style.valueOf(style));
+	public FormatterStep newFormatterStep(FormatterStepConfig stepConfig) {
+		FileSignature config = null;
+		if (configFile != null) {
+			config = ThrowingEx.get(() -> FileSignature.signAsList(stepConfig.getFileLocator().locateFile(configFile)));
+		}
+		String diktatVersion = version != null ? version : DiktatStep.defaultVersionDiktat();
+		return DiktatStep.create(diktatVersion, stepConfig.getProvisioner(), Collections.emptyMap(), config);
 	}
 }
